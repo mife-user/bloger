@@ -24,3 +24,12 @@ func (a *App) LoadConfig() error {
 	a.config = conf.GetConfig()
 	return nil
 }
+
+// LoadLogger 加载日志
+func (a *App) LoadLogger() error {
+	if err := logger.InitLogger(a.config); err != nil {
+		logger.Error("LoadLogger failed", logger.C(err))
+		return err
+	}
+	return nil
+}

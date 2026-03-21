@@ -21,7 +21,11 @@ func Init() (*App, error) {
 	var app App
 	// 加载配置
 	if err := app.LoadConfig(); err != nil {
-		logger.Error("LoadConfig failed", logger.C(err))
+		return nil, err
+	}
+	// 加载日志
+	if err := app.LoadLogger(); err != nil {
+		logger.Error("LoadLogger failed", logger.C(err))
 		return nil, err
 	}
 	// 加载路由
