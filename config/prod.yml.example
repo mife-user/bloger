@@ -1,0 +1,37 @@
+# 生产环境配置示例
+# 复制此文件为 prod.yml 并填写实际配置
+
+# Gin Web 框架配置
+gin:
+  mode: "release"  # 运行模式: debug/release
+  port: 8080       # 服务端口
+  cors:
+    allow_origins: ["https://yourdomain.com"]  # 允许的前端域名
+    allow_methods: ["GET", "POST", "PUT", "DELETE"]
+
+# GitHub OAuth 配置
+github:
+  client_id: "your_github_client_id"           # GitHub OAuth Client ID
+  client_secret: "your_github_client_secret"   # GitHub OAuth Client Secret
+  redirect_uri: "https://yourdomain.com/callback"  # OAuth 回调地址
+
+# AI 大模型配置
+ai:
+  provider: "openai"  # AI 提供商: openai/anthropic/local
+  api_key: "your_api_key_here"  # AI API 密钥
+  model: "gpt-4"      # 使用的模型
+  base_url: ""        # API 基础 URL（可选，用于自定义端点）
+
+# 日志配置
+log:
+  level: "info"       # 日志级别: debug/info/warn/error
+  output: "logs/app.log"  # 日志文件路径
+  max_size: 100       # 单个日志文件最大大小（MB）
+  max_backups: 5      # 保留的旧日志文件最大数量
+  max_age: 30         # 保留旧日志文件的最大天数
+  compress: true      # 是否压缩旧日志文件
+
+# 数据存储配置
+storage:
+  blog_dir: "my_blog"  # 博客生成目录
+  data_dir: "data"     # 用户数据目录
