@@ -33,3 +33,6 @@ logs/
 # 系统文件
 .DS_Store
 Thumbs.db
+
+# 文档
+documents\LangChainGo完全指南.md

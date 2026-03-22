@@ -13,8 +13,8 @@ import (
 
 // Route 路由
 type Route struct {
-	handler *githandler.GitHandler
-	config  *conf.Config
+	githandler *githandler.GitHandler
+	config     *conf.Config
 }
 
 // NewRoute 新建路由
@@ -22,7 +22,7 @@ func (r *Route) NewRoute(config *conf.Config) error {
 	repo := gitrepo.NewGitRepo(config)
 	service := gitservice.NewGitService(repo)
 	handler := githandler.NewGitHandler(service)
-	r.handler = handler
+	r.githandler = handler
 	r.config = config
 	return nil
 }
@@ -39,5 +39,7 @@ func (r *Route) Setup() *gin.Engine {
 			"message": "Hello, World!",
 		})
 	})
+	// 保存token
+	route.POST("/git/save", r.githandler.Save)
 	return route
 }

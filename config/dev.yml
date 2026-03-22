@@ -6,3 +6,7 @@ gin:
     allow_methods: ["GET", "POST", "PUT", "DELETE"]
 git:
   lock_path: "data/lock/secrets.json"
+ai:
+  base_url: "https://api.deepseek.com/v1"
+  api_key: "sk-8ed0811e543848b58f253b5df229cfbe"
+  model: "deepseek-3.5"

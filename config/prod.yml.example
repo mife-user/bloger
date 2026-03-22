@@ -17,10 +17,9 @@ github:
 
 # AI 大模型配置
 ai:
-  provider: "openai"  # AI 提供商: openai/anthropic/local
-  api_key: "your_api_key_here"  # AI API 密钥
-  model: "gpt-4"      # 使用的模型
-  base_url: ""        # API 基础 URL（可选，用于自定义端点）
+  base_url: "https://api.deepseek.com/v1"  # DeepSeek API地址
+  api_key: "your_deepseek_api_key_here"    # DeepSeek API密钥
+  model: "deepseek-chat"                   # 模型名称: deepseek-chat/deepseek-coder
 
 # 日志配置
 log:

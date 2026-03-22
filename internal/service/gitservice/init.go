@@ -5,9 +5,9 @@ import (
 )
 
 type GitService struct {
-	Repo gitrepo.GitRepo
+	Repo *gitrepo.GitRepo
 }
 
 func NewGitService(repo *gitrepo.GitRepo) *GitService {
-	return &GitService{Repo: *repo}
+	return &GitService{Repo: repo}
 }

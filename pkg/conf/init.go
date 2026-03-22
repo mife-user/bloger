@@ -4,6 +4,13 @@ type Config struct {
 	Env string    `mapstructure:"env"`
 	Gin GinConfig `mapstructure:"gin"`
 	Git GitConfig `mapstructure:"git"`
+	Ai  AiConfig  `mapstructure:"ai"`
+}
+
+type AiConfig struct {
+	ApiKey  string `mapstructure:"api_key"`
+	BaseURL string `mapstructure:"base_url"`
+	Model   string `mapstructure:"model"`
 }
 
 type GitConfig struct {
