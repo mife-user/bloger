@@ -1,10 +1,10 @@
 package route
 
 import (
-	"bloger/internal/api/handler"
+	"bloger/internal/api/handler/githandler"
 	"bloger/internal/api/middleware"
-	"bloger/internal/repo"
-	"bloger/internal/service"
+	"bloger/internal/repo/gitrepo"
+	"bloger/internal/service/gitservice"
 	"bloger/pkg/conf"
 	"net/http"
 
@@ -13,15 +13,15 @@ import (
 
 // Route 路由
 type Route struct {
-	handler *handler.Handler
+	handler *githandler.GitHandler
 	config  *conf.Config
 }
 
 // NewRoute 新建路由
 func (r *Route) NewRoute(config *conf.Config) error {
-	repo := repo.NewRepo()
-	service := service.NewService(repo)
-	handler := handler.NewHandler(service)
+	repo := gitrepo.NewGitRepo(config)
+	service := gitservice.NewGitService(repo)
+	handler := githandler.NewGitHandler(service)
 	r.handler = handler
 	r.config = config
 	return nil

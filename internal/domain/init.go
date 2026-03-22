@@ -1,7 +1,9 @@
 package domain
 
-type Service interface {
+type GitService interface {
+	Save(token string) error
 }
 
-type Repo interface {
+type GitRepo interface {
+	Save(token string) error
 }
