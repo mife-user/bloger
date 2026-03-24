@@ -8,9 +8,10 @@ type Config struct {
 }
 
 type AiConfig struct {
-	ApiKey  string `mapstructure:"api_key"`
-	BaseURL string `mapstructure:"base_url"`
-	Model   string `mapstructure:"model"`
+	ApiKey       string `mapstructure:"api_key"`
+	BaseURL      string `mapstructure:"base_url"`
+	Model        string `mapstructure:"model"`
+	SystemPrompt string `mapstructure:"system_prompt"`
 }
 
 type GitConfig struct {

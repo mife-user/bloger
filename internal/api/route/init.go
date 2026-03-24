@@ -1,9 +1,12 @@
 package route
 
 import (
+	"bloger/internal/ai/exexcutor"
+	"bloger/internal/api/handler/agenthandler"
 	"bloger/internal/api/handler/githandler"
 	"bloger/internal/api/middleware"
 	"bloger/internal/repo/gitrepo"
+	"bloger/internal/service/agentservice"
 	"bloger/internal/service/gitservice"
 	"bloger/pkg/conf"
 	"net/http"
@@ -13,16 +16,26 @@ import (
 
 // Route 路由
 type Route struct {
-	githandler *githandler.GitHandler
-	config     *conf.Config
+	githandler      *githandler.GitHandler
+	executorhandler *agenthandler.AgentHandler
+	config          *conf.Config
 }
 
 // NewRoute 新建路由
 func (r *Route) NewRoute(config *conf.Config) error {
+
 	repo := gitrepo.NewGitRepo(config)
-	service := gitservice.NewGitService(repo)
-	handler := githandler.NewGitHandler(service)
-	r.githandler = handler
+	gitservice := gitservice.NewGitService(repo)
+	githandler := githandler.NewGitHandler(gitservice)
+	r.githandler = githandler
+
+	executor, err := exexcutor.InitExecutor(config)
+	if err != nil {
+		return err
+	}
+	executorService := agentservice.NewAgentService(executor)
+	executorhandler := agenthandler.NewAgentHandler(executorService)
+	r.executorhandler = executorhandler
 	r.config = config
 	return nil
 }

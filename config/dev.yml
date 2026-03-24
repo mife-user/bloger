@@ -10,3 +10,4 @@ ai:
   base_url: "https://api.deepseek.com/v1"
   api_key: "sk-8ed0811e543848b58f253b5df229cfbe"
   model: "deepseek-3.5"
+  system_prompt: "你是一个专业的代码助手"

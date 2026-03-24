@@ -1,4 +1,4 @@
-package llm
+package llmer
 
 import (
 	"bloger/pkg/conf"
@@ -9,13 +9,8 @@ import (
 	"github.com/tmc/langchaingo/llms/openai"
 )
 
-// LLM 大语言模型客户端
-type LLM struct {
-	Client llms.Model
-}
-
 // InitLLM 初始化LLM客户端
-func InitLLM(config *conf.Config) (*LLM, error) {
+func InitLLM(config *conf.Config) (llms.Model, error) {
 	logger.Info("初始化LLM...")
 	// 验证配置
 	if config.Ai.ApiKey == "" {
@@ -34,7 +29,5 @@ func InitLLM(config *conf.Config) (*LLM, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &LLM{
-		Client: client,
-	}, nil
+	return client, nil
 }

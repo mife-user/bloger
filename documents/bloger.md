@@ -65,30 +65,46 @@ Wails
 	1. 短时记忆langchaingo拥有
 	2. 长时记忆用户对话结束后利用ai压缩对话后文本存储
 ### 架构：
-- .github/workflows：Github Actions实现目录
-- web：前端文件夹
+- .github/workflows：Github Actions实现目录（待创建）
+- web：前端文件夹（待创建）
 - cmd/main：程序启动
 - cmd/bootstrap：存放启动函数，简化main
 - internal/api/handler：handler处理器
+  - agenthandler：AI Agent 处理器
+  - githandler：GitHub 相关处理器
 - internal/api/middleware：中间件
 - internal/api/route：路由注册
 - internal/domain：领域层，定义接口
+- internal/model：数据模型层
+  - gitmodel：GitHub 相关数据模型
 - internal/repo：数据持久化层
+  - gitrepo：GitHub 数据持久化
 - internal/service：业务逻辑处理层
-- internal/ai/agent：放主agent逻辑，系统提示
-- internal/ai/skill：存放skill技能
-- internal/ai/knowledge/：向量存储
-- internal/ai/knowledge/data：知识库目录
-- internal/ai/llm：大模型封装
-- internal/tools/hugos/template：内置默认hugo风格模板-目录
-- internal/tools/hugos/hugo：hugo操作封装
-- internal/tools/git：git操作工具
+  - agentservice：AI Agent 业务逻辑
+  - gitservice：GitHub 业务逻辑
+- internal/ai：AI 能力层
+  - agenter：主 Agent 逻辑，系统提示
+  - exexcutor：执行器，处理对话和任务
+  - llmer：大模型封装
+  - memoryer：记忆管理，向量存储
+  - prompter：提示词管理
+  - tooler：工具封装
+    - gittool：Git 操作工具
+    - hugotool：Hugo 操作封装
+      - template：内置默认 Hugo 风格模板目录
 - config：存放配置文件
 - pkg：通用工具层
-- data_user/memory/talks：聊天对话记录压缩存储目录
-- data_user/memory/paint：用户喜好，行为习惯文本存储目录
-- data_user/lock：用户隐私存储目录
-- my_blog：生成hugo目录，在此创建github仓库，部署在GitHub pages上
+  - conf：配置管理
+  - db：数据库操作（JSON 文件存储）
+  - err：错误处理
+  - exc：异常处理和工具函数
+  - logger：日志系统
+  - utils：通用工具函数
+- data：用户数据存储
+  - memory/talks：聊天对话记录压缩存储目录
+  - memory/paint：用户喜好，行为习惯文本存储目录
+  - lock：用户隐私存储目录
+- my_blog：生成 Hugo 目录，在此创建 GitHub 仓库，部署在 GitHub Pages 上
 ### 前端打包：
 采用 **Wails 嵌入式方案**，将前端资源编译进二进制文件
 
