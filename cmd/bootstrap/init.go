@@ -28,6 +28,8 @@ func Init() (*App, error) {
 		logger.Error("LoadLogger failed", logger.C(err))
 		return nil, err
 	}
+	// 初始化路由对象
+	app.route = &route.Route{}
 	// 加载路由
 	if err := app.LoadRoute(); err != nil {
 		logger.Error("LoadRoute failed", logger.C(err))
