@@ -2,7 +2,7 @@ package llmer
 
 import (
 	"bloger/pkg/conf"
-	"bloger/pkg/err"
+	"bloger/pkg/errs"
 	"bloger/pkg/logger"
 
 	"github.com/tmc/langchaingo/llms"
@@ -14,11 +14,11 @@ func InitLLM(config *conf.Config) (llms.Model, error) {
 	logger.Info("初始化LLM...")
 	// 验证配置
 	if config.Ai.ApiKey == "" {
-		return nil, err.New("api_key is empty")
+		return nil, errs.New("api_key is empty")
 	}
 	// 设置DeepSeek的API地址
 	if config.Ai.BaseURL == "" {
-		return nil, err.New("base_url is empty")
+		return nil, errs.New("base_url is empty")
 	}
 	// 创建 langchaingo 的 OpenAI 客户端
 	client, err := openai.New(
