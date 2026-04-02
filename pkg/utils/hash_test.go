@@ -154,7 +154,7 @@ func TestHashPassword_LongPassword(t *testing.T) {
 	}
 
 	hash, err := HashPassword(longPassword)
-	
+
 	// bcrypt会返回错误当密码超过72字节
 	if err != nil {
 		// 这是预期行为，bcrypt有72字节限制

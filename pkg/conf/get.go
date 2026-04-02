@@ -17,13 +17,13 @@ func GetConfig() *Config {
 func LoadConfig() error {
 	// 加载配置文件
 	v := viper.New()
-	
+
 	// 获取当前工作目录
 	workDir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	
+
 	// 尝试多个可能的配置文件路径
 	configPaths := []string{
 		filepath.Join(workDir, "config"),
@@ -31,7 +31,7 @@ func LoadConfig() error {
 		"./config",
 		"../../config",
 	}
-	
+
 	found := false
 	for _, path := range configPaths {
 		if _, err := os.Stat(path); err == nil {
@@ -40,24 +40,24 @@ func LoadConfig() error {
 			break
 		}
 	}
-	
+
 	if !found {
 		// 使用默认路径
 		v.AddConfigPath("../../config")
 	}
-	
+
 	v.SetConfigName("dev")
 	v.SetConfigType("yml")
-	
+
 	// 读取配置文件
 	if err := v.ReadInConfig(); err != nil {
 		return err
 	}
-	
+
 	// 解析配置文件
 	if err := v.Unmarshal(&config); err != nil {
 		return err
 	}
-	
+
 	return nil
 }

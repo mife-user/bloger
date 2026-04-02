@@ -14,7 +14,7 @@ var loggerInstance *zap.Logger
 // 初始化日志实例
 func InitLogger(config *conf.Config) error {
 	// 日志目录
-	logDir := "./logs"
+	logDir := "logs"
 	// 确保日志目录存在
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return err

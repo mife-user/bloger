@@ -9,16 +9,15 @@ import (
 	"bloger/internal/service/agentservice"
 	"bloger/internal/service/gitservice"
 	"bloger/pkg/conf"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Route 路由
 type Route struct {
-	githandler      *githandler.GitHandler
-	executorhandler *agenthandler.AgentHandler
-	config          *conf.Config
+	githandler   *githandler.GitHandler
+	agenthandler *agenthandler.AgentHandler
+	config       *conf.Config
 }
 
 // NewRoute 新建路由
@@ -34,8 +33,8 @@ func (r *Route) NewRoute(config *conf.Config) error {
 		return err
 	}
 	executorService := agentservice.NewAgentService(executor)
-	executorhandler := agenthandler.NewAgentHandler(executorService)
-	r.executorhandler = executorhandler
+	agentHandler := agenthandler.NewAgentHandler(executorService)
+	r.agenthandler = agentHandler
 	r.config = config
 	return nil
 }
@@ -46,13 +45,15 @@ func (r *Route) Setup() *gin.Engine {
 
 	route := gin.Default()
 	route.Use(middleware.CorsMiddleware(r.config))
-	// 路由
-	route.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello, World!",
-		})
-	})
 	// 保存token
-	route.POST("/git/save", r.githandler.Save)
+	gitRoute := route.Group("/git")
+	{
+		gitRoute.POST("/save", r.githandler.Save)
+	}
+	// 调用模型
+	agentRoute := route.Group("/agent")
+	{
+		agentRoute.POST("/chat", r.agenthandler.Chat)
+	}
 	return route
 }
