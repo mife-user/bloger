@@ -50,6 +50,6 @@ func TestAgentHandler_ServiceInjection(t *testing.T) {
 // mockAgentService 模拟AgentService
 type mockAgentService struct{}
 
-func (m *mockAgentService) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
-	return map[string]any{"output": "test response"}, nil
+func (m *mockAgentService) Chat(ctx context.Context, input map[string]any) (string, error) {
+	return "test response", nil
 }
