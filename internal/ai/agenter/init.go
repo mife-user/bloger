@@ -11,6 +11,9 @@ import (
 // InitAgent 初始化Agent
 func InitAgent(llm llms.Model, agentTools []tools.Tool) agents.Agent {
 	logger.Info("初始化Agent...")
-	agent := agents.NewOpenAIFunctionsAgent(llm, agentTools)
+
+	// 创建 ConversationalAgent
+	agent := agents.NewConversationalAgent(llm, agentTools)
+
 	return agent
 }
