@@ -24,7 +24,7 @@ func TestNewAgentService(t *testing.T) {
 // TestAgentService_Chat 测试聊天功能
 func TestAgentService_Chat(t *testing.T) {
 	mockAgent := &mockAgent{
-		response: "Hello! How can I help you?",
+		response: map[string]any{"output": "Hello! How can I help you?"},
 	}
 
 	service := NewAgentService(mockAgent)
@@ -40,13 +40,15 @@ func TestAgentService_Chat(t *testing.T) {
 		t.Fatalf("Chat失败: %v", err)
 	}
 
-	if result == "" {
-		t.Fatal("结果不应该为空")
+	if result == nil {
+		t.Fatal("结果不应该为nil")
 	}
 
 	// 验证响应
-	if result != "Hello! How can I help you?" {
-		t.Errorf("期望输出 'Hello! How can I help you?', 得到 %v", result)
+	if output, ok := result["output"]; ok {
+		if output != "Hello! How can I help you?" {
+			t.Errorf("期望输出 'Hello! How can I help you?', 得到 %v", output)
+		}
 	}
 }
 
@@ -77,7 +79,7 @@ func TestAgentService_Chat_Error(t *testing.T) {
 // TestAgentService_Chat_EmptyInput 测试空输入
 func TestAgentService_Chat_EmptyInput(t *testing.T) {
 	mockAgent := &mockAgent{
-		response: "Please provide input",
+		response: map[string]any{"output": "Please provide input"},
 	}
 
 	service := NewAgentService(mockAgent)
@@ -91,15 +93,21 @@ func TestAgentService_Chat_EmptyInput(t *testing.T) {
 		t.Fatalf("Chat失败: %v", err)
 	}
 
-	if result == "" {
-		t.Fatal("结果不应该为空")
+	if result == nil {
+		t.Fatal("结果不应该为nil")
 	}
 }
 
 // TestAgentService_Chat_ComplexInput 测试复杂输入
 func TestAgentService_Chat_ComplexInput(t *testing.T) {
 	mockAgent := &mockAgent{
-		response: "Blog post created",
+		response: map[string]any{
+			"output": "Blog post created",
+			"metadata": map[string]string{
+				"word_count": "500",
+				"status":     "draft",
+			},
+		},
 	}
 
 	service := NewAgentService(mockAgent)
@@ -120,20 +128,20 @@ func TestAgentService_Chat_ComplexInput(t *testing.T) {
 		t.Fatalf("Chat失败: %v", err)
 	}
 
-	if result == "" {
-		t.Fatal("结果不应该为空")
+	if result == nil {
+		t.Fatal("结果不应该为nil")
 	}
 }
 
 // mockAgent 模拟Agent用于测试
 type mockAgent struct {
-	response string
+	response map[string]any
 	err      error
 }
 
-func (m *mockAgent) Chat(ctx context.Context, input map[string]any) (string, error) {
+func (m *mockAgent) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
 	if m.err != nil {
-		return "", m.err
+		return nil, m.err
 	}
 	return m.response, nil
 }

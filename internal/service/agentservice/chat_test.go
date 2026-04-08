@@ -9,10 +9,10 @@ import (
 func TestAgentService_Chat_Integration(t *testing.T) {
 	// 创建一个更复杂的mock agent
 	mockAgent := &advancedMockAgent{
-		responses: []string{
-			"First response",
-			"Second response",
-			"Third response",
+		responses: []map[string]any{
+			{"output": "First response"},
+			{"output": "Second response"},
+			{"output": "Third response"},
 		},
 	}
 
@@ -33,8 +33,8 @@ func TestAgentService_Chat_Integration(t *testing.T) {
 			continue
 		}
 
-		if result == "" {
-			t.Errorf("第%d次结果不应该为空", i+1)
+		if result == nil {
+			t.Errorf("第%d次结果不应该为nil", i+1)
 		}
 	}
 }
@@ -84,7 +84,7 @@ func TestAgentService_Chat_Timeout(t *testing.T) {
 // TestAgentService_Chat_Concurrent 测试并发调用
 func TestAgentService_Chat_Concurrent(t *testing.T) {
 	mockAgent := &threadSafeMockAgent{
-		response: "concurrent response",
+		response: map[string]any{"output": "concurrent response"},
 	}
 
 	service := NewAgentService(mockAgent)
@@ -106,8 +106,8 @@ func TestAgentService_Chat_Concurrent(t *testing.T) {
 				t.Errorf("并发调用%d失败: %v", id, err)
 			}
 
-			if result == "" {
-				t.Errorf("并发调用%d结果为空", id)
+			if result == nil {
+				t.Errorf("并发调用%d结果为nil", id)
 			}
 
 			done <- true
@@ -122,11 +122,11 @@ func TestAgentService_Chat_Concurrent(t *testing.T) {
 
 // advancedMockAgent 高级mock agent
 type advancedMockAgent struct {
-	responses []string
+	responses []map[string]any
 	callCount int
 }
 
-func (m *advancedMockAgent) Chat(ctx context.Context, input map[string]any) (string, error) {
+func (m *advancedMockAgent) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
 	if m.callCount >= len(m.responses) {
 		m.callCount = 0
 	}
@@ -138,32 +138,37 @@ func (m *advancedMockAgent) Chat(ctx context.Context, input map[string]any) (str
 // cancellableMockAgent 可取消的mock agent
 type cancellableMockAgent struct{}
 
-func (m *cancellableMockAgent) Chat(ctx context.Context, input map[string]any) (string, error) {
+func (m *cancellableMockAgent) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
 	select {
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return nil, ctx.Err()
 	default:
-		return "response", nil
+		return map[string]any{"output": "response"}, nil
 	}
 }
 
 // slowMockAgent 慢速mock agent
 type slowMockAgent struct{}
 
-func (m *slowMockAgent) Chat(ctx context.Context, input map[string]any) (string, error) {
+func (m *slowMockAgent) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
 	select {
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return nil, ctx.Err()
 	case <-make(chan bool): // 永远不会返回
-		return "", nil
+		return nil, nil
 	}
 }
 
 // threadSafeMockAgent 线程安全的mock agent
 type threadSafeMockAgent struct {
-	response string
+	response map[string]any
 }
 
-func (m *threadSafeMockAgent) Chat(ctx context.Context, input map[string]any) (string, error) {
-	return m.response, nil
+func (m *threadSafeMockAgent) Chat(ctx context.Context, input map[string]any) (map[string]any, error) {
+	// 返回响应的副本，避免并发问题
+	result := make(map[string]any)
+	for k, v := range m.response {
+		result[k] = v
+	}
+	return result, nil
 }

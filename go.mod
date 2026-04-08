@@ -2,7 +2,11 @@ module bloger
 
 go 1.25.4
 
-require github.com/spf13/viper v1.21.0
+require (
+	github.com/go-git/go-git/v5 v5.17.0
+	github.com/spf13/viper v1.21.0
+	golang.org/x/crypto v0.48.0
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
@@ -24,7 +28,6 @@ require (
 	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.8.0 // indirect
-	github.com/go-git/go-git/v5 v5.17.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.30.1 // indirect
@@ -63,7 +66,6 @@ require (
 	go.starlark.net v0.0.0-20230302034142-4b1e35fe2254 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.22.0 // indirect
-	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa // indirect
 	golang.org/x/net v0.51.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
