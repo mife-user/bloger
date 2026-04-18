@@ -1,0 +1,17 @@
+IMAGE: golang:1.19-alpine as builder
+
+WORKDIR: /app
+
+COPY go.mod go.sum .
+ 
+RUN go mod tidy
+
+COPY . .
+
+RUN go build -o bloger
+
+Image: bloger
+
+COPY --from=builder /app/bloger /app/bloger
+
+CMD ["/app/bloger"]
