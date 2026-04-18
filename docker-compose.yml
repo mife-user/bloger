@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  bloger:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./logs:/app/logs
+    networks: 
+      - bloger-network
+    otel-lgtm:
+      image: grafana/otel-lgtm:latest
+      ports:
+        - 
+      networks: 
+        - bloger-network

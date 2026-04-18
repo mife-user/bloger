@@ -27,9 +27,7 @@ func LoadConfig() error {
 	// 尝试多个可能的配置文件路径
 	configPaths := []string{
 		filepath.Join(workDir, "config"),
-		filepath.Join(workDir, "../../config"),
 		"./config",
-		"../../config",
 	}
 
 	found := false
@@ -43,7 +41,7 @@ func LoadConfig() error {
 
 	if !found {
 		// 使用默认路径
-		v.AddConfigPath("../../config")
+		v.AddConfigPath("/app/config")
 	}
 
 	v.SetConfigName("dev")
