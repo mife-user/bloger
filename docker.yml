@@ -14,4 +14,6 @@ Image: bloger
 
 COPY --from=builder /app/bloger /app/bloger
 
+COPY --from=builder /app/config /app/config
+
 CMD ["/app/bloger"]
