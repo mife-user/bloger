@@ -24,7 +24,7 @@ func TestInitAgent(t *testing.T) {
 	toolList := []tools.Tool{}
 
 	// 初始化Agent
-	agent := InitAgent(llm, toolList)
+	agent := InitAgent(llm, nil, toolList)
 
 	if agent == nil {
 		t.Fatal("Agent不应该为nil")
@@ -47,7 +47,7 @@ func TestInitAgent_WithTools(t *testing.T) {
 		&mockTool{name: "test_tool"},
 	}
 
-	agent := InitAgent(llm, toolList)
+	agent := InitAgent(llm, nil, toolList)
 
 	if agent == nil {
 		t.Fatal("Agent不应该为nil")
@@ -65,7 +65,7 @@ func TestInitAgent_NilLLM(t *testing.T) {
 		}
 	}()
 
-	agent := InitAgent(nil, toolList)
+	agent := InitAgent(nil, nil, toolList)
 
 	// 如果没有panic，说明langchaingo允许nil LLM
 	// 这种情况下我们记录一下

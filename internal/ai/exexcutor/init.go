@@ -4,6 +4,7 @@ import (
 	"bloger/internal/ai/agenter"
 	"bloger/internal/ai/llmer"
 	"bloger/internal/ai/memoryer"
+	"bloger/internal/ai/prompter"
 	"bloger/internal/ai/tooler"
 	"bloger/pkg/conf"
 
@@ -29,8 +30,11 @@ func InitExecutor(config *conf.Config) (*Executor, error) {
 	agentTools := tooler.InitTools()
 	// 初始化内存
 	memory := memoryer.InitMemoryer(llm)
+	// 初始化提示词
+	prompter := prompter.InitPrompter(llm, config.Ai.SystemPrompt)
 	// 初始化Agent
-	agent := agenter.InitAgent(llm, agentTools)
+	agent := agenter.InitAgent(llm, &prompter, agentTools)
+
 	// 创建Executor并设置内存
 	executor := agents.NewExecutor(agent, agents.WithMemory(memory))
 	return NewExecutor(executor), nil

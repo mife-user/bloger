@@ -3,22 +3,14 @@ version: '3.8'
 services:
   bloger:
     build: .
+    container_name: bloger
+    restart: always
     ports:
-      - 8080:8080
+      - 3000:3000
     volumes:
       - ./logs:/app/logs
     networks: 
       - bloger-network
-  otel-collector:
-    image: otel/open-telemetry-collector-contrib:latest
-    command: --config=/app/config/otel.yaml --service-name=bloger-collector
-    ports:
-      - 4317:4317
-      - 4318:4318
-      - 9411:9411
-      - 6831:6831/udp
-      - 14268:14268
-      - 88888:8888
-      - 88889:8889
-    networks: 
-      - bloger-network
+networks:
+  bloger-network:
+    driver: bridge
