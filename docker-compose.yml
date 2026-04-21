@@ -11,6 +11,17 @@ services:
       - ./logs:/app/logs
     networks: 
       - bloger-network
+    
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: --config=/etc/otel-config.yaml
+    volumes:
+      - ./otel-config.yaml:/etc/otel-config.yaml
+    ports:
+      - 4317:4317   # OTLP gRPC
+      - 4318:4318   # OTLP HTTP
+      - 8889:8889   # Prometheus
+      # - 13133:13133 # Health check
 networks:
   bloger-network:
     driver: bridge

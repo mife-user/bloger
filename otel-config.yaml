@@ -1,0 +1,101 @@
+# OpenTelemetry Collector 配置文件
+# 用于接收、处理和导出遥测数据（traces, metrics, logs）
+
+# ========== Receivers（接收器）==========
+# 定义如何接收遥测数据
+receivers:
+  # OTLP 接收器 - OpenTelemetry 协议标准接收器
+  otlp:
+    protocols:
+      # gRPC 协议配置
+      grpc:
+        endpoint: 0.0.0.0:4317  # gRPC 监听地址和端口
+      # HTTP 协议配置
+      http:
+        endpoint: 0.0.0.0:4318  # HTTP 监听地址和端口
+
+# ========== Processors（处理器）==========
+# 定义如何处理接收到的数据
+processors:
+  # 批处理器 - 批量处理数据以提高性能
+  batch:
+    timeout: 1s           # 批量处理超时时间
+    send_batch_size: 1024 # 批量发送大小
+
+  # 内存限制处理器 - 防止内存溢出
+  memory_limiter:
+    limit_mib: 512        # 内存限制（MiB）
+    spike_limit_mib: 128  # 内存峰值限制（MiB）
+    check_interval: 5s    # 检查间隔
+
+# ========== Exporters（导出器）==========
+# 定义数据导出到哪里
+exporters:
+  # Jaeger 导出器 - 用于链路追踪
+  otlp/jaeger:
+    endpoint: jaeger:4317  # Jaeger 服务地址
+    tls:
+      insecure: true       # 开发环境使用非安全连接
+
+  # Prometheus 导出器 - 用于指标数据
+  prometheus:
+    endpoint: 0.0.0.0:8889  # Prometheus 抓取端点
+    namespace: bloger       # 指标命名空间
+
+  # Loki 导出器 - 用于日志数据
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push  # Loki 服务地址
+    labels:
+      attributes:
+        service.name: service_name
+
+  # OTLP 导出器 - 标准 OpenTelemetry 协议导出
+  otlp:
+    endpoint: otel-collector:4317
+    tls:
+      insecure: true
+
+  # 调试导出器 - 用于开发和调试
+  debug:
+    verbosity: detailed  # 详细输出模式
+
+# ========== Extensions（扩展）==========
+# # 可选的扩展功能
+# extensions:
+#   # 健康检查扩展
+#   health_check:
+#     endpoint: 0.0.0.0:13133
+
+#   # pprof 性能分析扩展
+#   pprof:
+#     endpoint: 0.0.0.0:1777
+
+#   # zpages 调试扩展
+#   zpages:
+#     endpoint: 0.0.0.0:55679
+
+# ========== Service（服务配置）==========
+# 定义数据流管道
+service:
+  # # 启用的扩展
+  # extensions: [health_check, pprof, zpages]
+
+  # 数据管道配置
+  pipelines:
+    # Traces 管道 - 链路追踪数据流
+    traces:
+      receivers: [otlp]           # 接收器：OTLP
+      processors: [memory_limiter, batch]  # 处理器：内存限制 + 批处理
+      exporters: [otlp/jaeger, debug]      # 导出器：Jaeger + 调试
+
+    # Metrics 管道 - 指标数据流
+    metrics:
+      receivers: [otlp]           # 接收器：OTLP
+      processors: [memory_limiter, batch]  # 处理器：内存限制 + 批处理
+      exporters: [prometheus, debug]       # 导出器：Prometheus + 调试
+
+    # Logs 管道 - 日志数据流
+    logs:
+      receivers: [otlp]           # 接收器：OTLP
+      processors: [memory_limiter, batch]  # 处理器：内存限制 + 批处理
+      exporters: [loki, debug]             # 导出器：Loki + 调试
