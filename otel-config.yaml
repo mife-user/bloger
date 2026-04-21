@@ -33,7 +33,7 @@ processors:
 exporters:
   # Jaeger 导出器 - 用于链路追踪
   otlp/jaeger:
-    endpoint: jaeger:4317  # Jaeger 服务地址
+    endpoint: jaeger:14250  # Jaeger 服务地址
     tls:
       insecure: true       # 开发环境使用非安全连接
 
@@ -43,11 +43,8 @@ exporters:
     namespace: bloger       # 指标命名空间
 
   # Loki 导出器 - 用于日志数据
-  loki:
-    endpoint: http://loki:3100/loki/api/v1/push  # Loki 服务地址
-    labels:
-      attributes:
-        service.name: service_name
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp  # Loki 服务地址
 
   # OTLP 导出器 - 标准 OpenTelemetry 协议导出
   otlp:
@@ -98,4 +95,4 @@ service:
     logs:
       receivers: [otlp]           # 接收器：OTLP
       processors: [memory_limiter, batch]  # 处理器：内存限制 + 批处理
-      exporters: [loki, debug]             # 导出器：Loki + 调试
+      exporters: [otlphttp/loki, debug]             # 导出器：Loki + 调试

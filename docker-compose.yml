@@ -6,7 +6,7 @@ services:
     container_name: bloger
     restart: always
     ports:
-      - 3000:3000
+      - 8080:8080
     volumes:
       - ./logs:/app/logs
     networks: 
@@ -22,6 +22,34 @@ services:
       - 4318:4318   # OTLP HTTP
       - 8889:8889   # Prometheus
       # - 13133:13133 # Health check
+    networks: 
+      - bloger-network
+    depends_on:
+      - jaeger
+      - loki
+  
+  # Jaeger 服务 - 用于链路追踪
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - 16686:16686   # Jaeger UI
+      - 14268:14268   # HTTP 接收端口
+      - 14250:14250   # OTLP gRPC 端口
+    networks: 
+      - bloger-network
+  
+  # Loki 服务 - 用于日志存储
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - 3100:3100   # HTTP API 端口
+      - 55680:55680 # OTLP 接收端口
+    volumes:
+      - ./loki-config.yml:/etc/loki/loki-config.yml
+    command: -config.file=/etc/loki/loki-config.yml
+    networks: 
+      - bloger-network
+    
 networks:
   bloger-network:
     driver: bridge
