@@ -18,7 +18,6 @@ func (a *App) LoadRoute() error {
 // LoadConfig 加载配置
 func (a *App) LoadConfig() error {
 	if err := conf.LoadConfig(); err != nil {
-		logger.Error("LoadConfig failed", logger.C(err))
 		return err
 	}
 	a.config = conf.GetConfig()
