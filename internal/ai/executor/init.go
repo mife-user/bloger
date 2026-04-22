@@ -1,4 +1,4 @@
-package exexcutor
+package executor
 
 import (
 	"bloger/internal/ai/agenter"

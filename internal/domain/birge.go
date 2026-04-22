@@ -11,9 +11,9 @@ type GitRepo interface {
 }
 
 type AgentService interface {
-	Chat(ctx context.Context, input map[string]any) (map[string]any, error)
+	Chat(ctx context.Context, input ChatRequest) (ChatResponse, error)
 }
 
 type Agent interface {
-	Chat(ctx context.Context, input map[string]any) (map[string]any, error)
+	Chat(ctx context.Context, input ChatRequest) (ChatResponse, error)
 }

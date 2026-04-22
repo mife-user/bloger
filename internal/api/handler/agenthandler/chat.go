@@ -1,6 +1,8 @@
 package agenthandler
 
 import (
+	"bloger/internal/api/dtos/request"
+	"bloger/internal/domain"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,10 +11,13 @@ import (
 // Chat 聊天
 func (h *AgentHandler) Chat(c *gin.Context) {
 	// 处理聊天逻辑
-	var req map[string]any
-	if err := c.ShouldBindJSON(&req); err != nil {
+	var reqdto request.ChatRequest
+	if err := c.ShouldBindJSON(&reqdto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+	req := domain.ChatRequest{
+		Message: reqdto.Message,
 	}
 	// 调用服务层处理聊天逻辑
 	response, err := h.service.Chat(c.Request.Context(), req)

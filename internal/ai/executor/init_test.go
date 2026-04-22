@@ -1,4 +1,4 @@
-package exexcutor
+package executor
 
 import (
 	"bloger/pkg/conf"

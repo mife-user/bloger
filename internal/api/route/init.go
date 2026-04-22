@@ -1,7 +1,7 @@
 package route
 
 import (
-	"bloger/internal/ai/exexcutor"
+	"bloger/internal/ai/executor"
 	"bloger/internal/api/handler/agenthandler"
 	"bloger/internal/api/handler/githandler"
 	"bloger/internal/api/middleware"
@@ -28,7 +28,7 @@ func (r *Route) NewRoute(config *conf.Config) error {
 	githandler := githandler.NewGitHandler(gitservice)
 	r.githandler = githandler
 
-	executor, err := exexcutor.InitExecutor(config)
+	executor, err := executor.InitExecutor(config)
 	if err != nil {
 		return err
 	}
