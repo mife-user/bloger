@@ -41,7 +41,7 @@ func LoadConfig() error {
 
 	if !found {
 		// 使用默认路径
-		v.AddConfigPath("/app/config")
+		v.AddConfigPath("../../config")
 	}
 
 	v.SetConfigName("dev")
