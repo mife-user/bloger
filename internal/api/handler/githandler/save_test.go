@@ -2,6 +2,7 @@ package githandler
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -146,14 +147,14 @@ func TestNewGitHandler(t *testing.T) {
 // mockGitService 模拟GitService
 type mockGitService struct{}
 
-func (m *mockGitService) Save(token string) error {
+func (m *mockGitService) Save(ctx context.Context, token string) error {
 	return nil
 }
 
 // errorGitService 会返回错误的mock service
 type errorGitService struct{}
 
-func (m *errorGitService) Save(token string) error {
+func (m *errorGitService) Save(ctx context.Context, token string) error {
 	return &testError{msg: "service error"}
 }
 

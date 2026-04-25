@@ -5,6 +5,7 @@ import (
 	"bloger/pkg/conf"
 	"bloger/pkg/db"
 	"bloger/pkg/utils"
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -29,7 +30,7 @@ func TestGitService_Save(t *testing.T) {
 
 	// 保存Token
 	testToken := "ghp_testtoken123456"
-	err := service.Save(testToken)
+	err := service.Save(context.Background(), testToken)
 	if err != nil {
 		t.Fatalf("保存Token失败: %v", err)
 	}
@@ -79,7 +80,7 @@ func TestGitService_Save_EmptyToken(t *testing.T) {
 	service := NewGitService(repo)
 
 	// 保存空Token
-	err := service.Save("")
+	err := service.Save(context.Background(), "")
 	if err != nil {
 		t.Fatalf("保存空Token失败: %v", err)
 	}
@@ -131,7 +132,7 @@ func TestGitService_Save_DifferentTokens(t *testing.T) {
 
 	for _, token := range tokens {
 		// 保存Token
-		err := service.Save(token)
+		err := service.Save(context.Background(), token)
 		if err != nil {
 			t.Errorf("保存Token失败: %v", err)
 			continue
@@ -195,7 +196,7 @@ func TestGitService_Save_Overwrite(t *testing.T) {
 
 	// 第一次保存
 	firstToken := "first_token"
-	err := service.Save(firstToken)
+	err := service.Save(context.Background(), firstToken)
 	if err != nil {
 		t.Fatalf("第一次保存失败: %v", err)
 	}
@@ -208,7 +209,7 @@ func TestGitService_Save_Overwrite(t *testing.T) {
 
 	// 第二次保存
 	secondToken := "second_token"
-	err = service.Save(secondToken)
+	err = service.Save(context.Background(), secondToken)
 	if err != nil {
 		t.Fatalf("第二次保存失败: %v", err)
 	}

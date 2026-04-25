@@ -3,11 +3,11 @@ package domain
 import "context"
 
 type GitService interface {
-	Save(token string) error
+	Save(ctx context.Context, token string) error
 }
 
 type GitRepo interface {
-	Save(token string) error
+	Save(ctx context.Context, token string) error
 }
 
 type AgentService interface {

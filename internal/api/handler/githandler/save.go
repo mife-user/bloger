@@ -24,7 +24,7 @@ func (h *GitHandler) Save(c *gin.Context) {
 		return
 	}
 	// 保存token
-	err := h.Service.Save(tokenstr)
+	err := h.Service.Save(c, tokenstr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
