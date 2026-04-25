@@ -7,5 +7,5 @@ import (
 
 // InitPrompter 初始化提示词模板
 func InitPrompter(llm llms.Model, prompt string) prompts.PromptTemplate {
-	return prompts.NewPromptTemplate(prompt, []string{"input"})
+	return prompts.NewPromptTemplate(prompt, []string{"input", "chat_history"})
 }

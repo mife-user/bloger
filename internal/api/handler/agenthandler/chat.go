@@ -1,7 +1,8 @@
 package agenthandler
 
 import (
-	"bloger/internal/api/dtos/request"
+	req "bloger/internal/api/dtos/request"
+	resp "bloger/internal/api/dtos/response"
 	"bloger/internal/domain"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 // Chat 聊天
 func (h *AgentHandler) Chat(c *gin.Context) {
 	// 处理聊天逻辑
-	var reqdto request.ChatRequest
+	var reqdto req.ChatRequest
 	if err := c.ShouldBindJSON(&reqdto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -25,5 +26,9 @@ func (h *AgentHandler) Chat(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"response": response})
+
+	respdto := resp.ChatResponse{
+		Message: response.Message,
+	}
+	c.JSON(http.StatusOK, respdto)
 }

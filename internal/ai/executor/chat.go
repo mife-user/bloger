@@ -2,18 +2,25 @@ package executor
 
 import (
 	"bloger/internal/domain"
+	"bloger/pkg/logger"
 	"context"
-
-	"bloger/internal/model/agentmodel"
 
 	"github.com/tmc/langchaingo/chains"
 )
 
 func (e *Executor) Chat(ctx context.Context, input domain.ChatRequest) (domain.ChatResponse, error) {
 	var err error
-	var responseModel agentmodel.ChatModel
-	responseModel.Message, err = chains.Call(ctx, e.executor, input.Message)
+	response, err := chains.Call(ctx, e.executor, input.Message)
+	if err != nil {
+		logger.Error("Call failed", logger.C(err))
+		return domain.ChatResponse{}, err
+	}
+	err = e.executor.Memory.SaveContext(ctx, input.Message, response)
+	if err != nil {
+		logger.Error("SaveContext failed", logger.C(err))
+		return domain.ChatResponse{}, err
+	}
 	return domain.ChatResponse{
-		Message: responseModel.Message,
-	}, err
+		Message: response,
+	}, nil
 }
