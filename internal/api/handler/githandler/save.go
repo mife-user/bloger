@@ -1,7 +1,7 @@
 package githandler
 
 import (
-	"bloger/pkg/exc"
+	"mifer/pkg/exc"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

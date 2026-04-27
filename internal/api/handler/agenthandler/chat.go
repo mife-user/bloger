@@ -1,9 +1,9 @@
 package agenthandler
 
 import (
-	req "bloger/internal/api/dtos/request"
-	resp "bloger/internal/api/dtos/response"
-	"bloger/internal/domain"
+	req "mifer/internal/api/dtos/request"
+	resp "mifer/internal/api/dtos/response"
+	"mifer/internal/domain"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,18 +17,16 @@ func (h *AgentHandler) Chat(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	req := domain.ChatRequest{
-		Message: reqdto.Message,
+	domainReq := domain.ChatRequest{
+		Content: reqdto.Content,
 	}
-	// 调用服务层处理聊天逻辑
-	response, err := h.service.Chat(c.Request.Context(), req)
+	response, err := h.service.Chat(c.Request.Context(), domainReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	respdto := resp.ChatResponse{
-		Message: response.Message,
+		Content: response.Content,
 	}
 	c.JSON(http.StatusOK, respdto)
 }

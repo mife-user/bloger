@@ -1,15 +1,14 @@
 package tooler
 
 import (
-	"bloger/internal/ai/tooler/gittool"
-	"bloger/internal/ai/tooler/hugotool"
+	"mifer/internal/ai/tooler/gittool"
+	"mifer/internal/ai/tooler/hugotool"
 
-	"github.com/tmc/langchaingo/tools"
+	"github.com/cloudwego/eino/components/tool"
 )
 
-// InitTools 初始化工具
-func InitTools() []tools.Tool {
-	return []tools.Tool{
+func InitTools() []tool.BaseTool {
+	return []tool.BaseTool{
 		&hugotool.HugTool{},
 		&gittool.GitTool{},
 	}

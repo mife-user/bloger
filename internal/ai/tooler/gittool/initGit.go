@@ -1,7 +1,7 @@
 package gittool
 
 import (
-	"bloger/pkg/logger"
+	"mifer/pkg/logger"
 	"fmt"
 	"os"
 

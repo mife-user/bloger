@@ -1,21 +1,21 @@
 package hugotool
 
-import "context"
+import (
+	"context"
 
-type HugTool struct {
+	"github.com/cloudwego/eino/components/tool"
+	"github.com/cloudwego/eino/schema"
+)
+
+type HugTool struct{}
+
+func (h *HugTool) Info(ctx context.Context) (*schema.ToolInfo, error) {
+	return &schema.ToolInfo{
+		Name: "hug",
+		Desc: "hug tool",
+	}, nil
 }
 
-// Name 工具名称
-func (h *HugTool) Name() string {
-	return "hug"
-}
-
-// Description 工具描述
-func (h *HugTool) Description() string {
-	return "hug tool"
-}
-
-// Call 调用工具
-func (h *HugTool) Call(ctx context.Context, input string) (string, error) {
+func (h *HugTool) InvokableRun(ctx context.Context, argumentsInJSON string, opts ...tool.Option) (string, error) {
 	return "", nil
 }

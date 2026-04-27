@@ -1,139 +1,51 @@
 package prompter
 
 import (
+	"context"
 	"testing"
 
-	"github.com/tmc/langchaingo/llms/openai"
+	"github.com/cloudwego/eino/schema"
 )
 
-// TestInitPrompter 测试初始化提示词模板
-func TestInitPrompter(t *testing.T) {
-	// 创建LLM
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
+func TestModifierBuilder_EmptyPrompt(t *testing.T) {
+	modifier := ModifierBuilder{}.Build("")
+	result := modifier(context.Background(), []*schema.Message{
+		schema.UserMessage("hello"),
+	})
+	// system message prepended, then original input
+	if len(result) != 2 {
+		t.Fatalf("expected 2 messages, got %d", len(result))
 	}
-
-	// 测试提示词
-	prompt := "You are a helpful assistant that helps users write blog posts."
-
-	template := InitPrompter(llm, prompt)
-
-	// PromptTemplate是一个结构体，不能与nil比较
-	// 我们验证template.Template字段不为空
-	_ = template // 使用template避免编译警告
-}
-
-// TestInitPrompter_EmptyPrompt 测试空提示词
-func TestInitPrompter_EmptyPrompt(t *testing.T) {
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
-	}
-
-	// 空提示词
-	template := InitPrompter(llm, "")
-
-	// 空提示词也应该能创建模板
-	_ = template
-}
-
-// TestInitPrompter_LongPrompt 测试长提示词
-func TestInitPrompter_LongPrompt(t *testing.T) {
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
-	}
-
-	// 生成一个很长的提示词
-	longPrompt := ""
-	for i := 0; i < 1000; i++ {
-		longPrompt += "This is a long prompt. "
-	}
-
-	template := InitPrompter(llm, longPrompt)
-
-	_ = template
-}
-
-// TestInitPrompter_SpecialCharacters 测试特殊字符提示词
-func TestInitPrompter_SpecialCharacters(t *testing.T) {
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
-	}
-
-	specialPrompts := []string{
-		"You are an assistant! Help with: code, debug, test.",
-		"You are an assistant\nwith newlines\nand tabs\t.",
-		"You are an assistant with 中文 and emoji 🤖.",
-		"You are an assistant with {variables} and {{templates}}.",
-	}
-
-	for _, prompt := range specialPrompts {
-		template := InitPrompter(llm, prompt)
-
-		// 验证模板创建成功
-		_ = template
+	if result[0].Role != schema.System {
+		t.Errorf("first message should be system, got %s", result[0].Role)
 	}
 }
 
-// TestInitPrompter_MultilinePrompt 测试多行提示词
-func TestInitPrompter_MultilinePrompt(t *testing.T) {
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
+func TestModifierBuilder_Prompt(t *testing.T) {
+	modifier := ModifierBuilder{}.Build("You are a helpful assistant.")
+	result := modifier(context.Background(), []*schema.Message{
+		schema.UserMessage("hi"),
+	})
+	if result[0].Content != "You are a helpful assistant." {
+		t.Errorf("expected system prompt, got '%s'", result[0].Content)
 	}
-
-	multilinePrompt := `You are a helpful assistant.
-
-Your responsibilities include:
-1. Writing blog posts
-2. Generating code examples
-3. Answering questions
-
-Please be helpful and accurate.`
-
-	template := InitPrompter(llm, multilinePrompt)
-
-	_ = template
 }
 
-// TestInitPrompter_TemplateVariables 测试模板变量
-func TestInitPrompter_TemplateVariables(t *testing.T) {
-	llm, err := openai.New(
-		openai.WithToken("test-key"),
-		openai.WithModel("deepseek-chat"),
-		openai.WithBaseURL("https://api.deepseek.com/v1"),
-	)
-	if err != nil {
-		t.Fatalf("创建LLM失败: %v", err)
+func TestModifierBuilder_MultilinePrompt(t *testing.T) {
+	prompt := "You are an assistant\nwith multiple\nlines."
+	modifier := ModifierBuilder{}.Build(prompt)
+	result := modifier(context.Background(), nil)
+	if len(result) != 1 {
+		t.Errorf("expected 1 message, got %d", len(result))
 	}
+}
 
-	// 包含变量的提示词
-	promptWithVars := "You are {{.role}}. Your task is {{.task}}."
-
-	template := InitPrompter(llm, promptWithVars)
-
-	_ = template
+func TestModifierBuilder_SpecialCharacters(t *testing.T) {
+	modifier := ModifierBuilder{}.Build("你是一个助手 with emoji 🤖")
+	result := modifier(context.Background(), []*schema.Message{
+		schema.UserMessage("中文输入"),
+	})
+	if len(result) != 2 {
+		t.Fatalf("expected 2 messages, got %d", len(result))
+	}
 }

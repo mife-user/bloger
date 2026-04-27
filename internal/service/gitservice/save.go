@@ -1,8 +1,8 @@
 package gitservice
 
 import (
-	"bloger/pkg/task"
-	"bloger/pkg/utils"
+	"mifer/pkg/task"
+	"mifer/pkg/utils"
 	"context"
 )
 

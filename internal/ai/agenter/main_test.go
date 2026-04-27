@@ -1,7 +1,7 @@
 package agenter
 
 import (
-	"bloger/pkg/logger"
+	"mifer/pkg/logger"
 	"os"
 	"testing"
 

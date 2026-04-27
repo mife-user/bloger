@@ -1,20 +1,23 @@
 package agenter
 
 import (
-	"bloger/pkg/logger"
+	"context"
 
-	"github.com/tmc/langchaingo/agents"
-	"github.com/tmc/langchaingo/llms"
-	"github.com/tmc/langchaingo/prompts"
-	"github.com/tmc/langchaingo/tools"
+	"mifer/pkg/logger"
+
+	"github.com/cloudwego/eino/components/model"
+	"github.com/cloudwego/eino/components/tool"
+	"github.com/cloudwego/eino/compose"
+	"github.com/cloudwego/eino/flow/agent/react"
 )
 
-// InitAgent 初始化Agent
-func InitAgent(llm llms.Model, prompter *prompts.PromptTemplate, agentTools []tools.Tool) agents.Agent {
+func InitAgent(ctx context.Context, llm model.ToolCallingChatModel,
+	tools []tool.BaseTool, modifier react.MessageModifier) (*react.Agent, error) {
 	logger.Info("初始化Agent...")
-
-	// 创建 ConversationalAgent
-	agent := agents.NewConversationalAgent(llm, agentTools, agents.WithPrompt(*prompter))
-
-	return agent
+	return react.NewAgent(ctx, &react.AgentConfig{
+		ToolCallingModel: llm,
+		ToolsConfig:      compose.ToolsNodeConfig{Tools: tools},
+		MessageModifier:  modifier,
+		MaxStep:          12,
+	})
 }

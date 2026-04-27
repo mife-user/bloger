@@ -1,7 +1,7 @@
 package gitrepo
 
 import (
-	"bloger/internal/model/gitmodel"
+	"mifer/internal/model/gitmodel"
 )
 
 func (r *GitRepo) Save(token string) error {

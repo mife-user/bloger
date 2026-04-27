@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"bloger/pkg/conf"
-	"bloger/pkg/logger"
+	"mifer/pkg/conf"
+	"mifer/pkg/logger"
 )
 
 // LoadRoute 加载路由

@@ -12,7 +12,8 @@ import (
 func TestGitTool_Name(t *testing.T) {
 	tool := &GitTool{}
 
-	name := tool.Name()
+	info, _ := tool.Info(context.Background())
+	name := info.Name
 
 	if name != "git" {
 		t.Errorf("期望名称 'git', 得到 '%s'", name)
@@ -23,7 +24,8 @@ func TestGitTool_Name(t *testing.T) {
 func TestGitTool_Description(t *testing.T) {
 	tool := &GitTool{}
 
-	desc := tool.Description()
+	info, _ := tool.Info(context.Background())
+	desc := info.Desc
 
 	if desc == "" {
 		t.Error("描述不应该为空")
@@ -48,7 +50,7 @@ func TestGitTool_Init(t *testing.T) {
 	}
 
 	inputJSON, _ := json.Marshal(input)
-	result, err := tool.Call(context.Background(), string(inputJSON))
+	result, err := tool.InvokableRun(context.Background(), string(inputJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -81,7 +83,7 @@ func TestGitTool_Add(t *testing.T) {
 	// 初始化仓库
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 创建测试文件
 	testFile := filepath.Join(repoPath, "test.txt")
@@ -96,7 +98,7 @@ func TestGitTool_Add(t *testing.T) {
 		Files:     []string{"test.txt"},
 	}
 	addJSON, _ := json.Marshal(addInput)
-	result, err := tool.Call(context.Background(), string(addJSON))
+	result, err := tool.InvokableRun(context.Background(), string(addJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -123,7 +125,7 @@ func TestGitTool_Commit(t *testing.T) {
 	// 初始化仓库
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 创建并添加文件
 	testFile := filepath.Join(repoPath, "test.txt")
@@ -131,7 +133,7 @@ func TestGitTool_Commit(t *testing.T) {
 
 	addInput := GitInput{Operation: OpAdd, Path: repoPath}
 	addJSON, _ := json.Marshal(addInput)
-	tool.Call(context.Background(), string(addJSON))
+	tool.InvokableRun(context.Background(), string(addJSON))
 
 	// 提交
 	commitInput := GitInput{
@@ -140,7 +142,7 @@ func TestGitTool_Commit(t *testing.T) {
 		Message:   "Test commit",
 	}
 	commitJSON, _ := json.Marshal(commitInput)
-	result, err := tool.Call(context.Background(), string(commitJSON))
+	result, err := tool.InvokableRun(context.Background(), string(commitJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -167,7 +169,7 @@ func TestGitTool_Status(t *testing.T) {
 	// 初始化仓库
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 查询状态
 	statusInput := GitInput{
@@ -175,7 +177,7 @@ func TestGitTool_Status(t *testing.T) {
 		Path:      repoPath,
 	}
 	statusJSON, _ := json.Marshal(statusInput)
-	result, err := tool.Call(context.Background(), string(statusJSON))
+	result, err := tool.InvokableRun(context.Background(), string(statusJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -202,7 +204,7 @@ func TestGitTool_Branch(t *testing.T) {
 	// 初始化仓库并创建初始提交
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 创建并提交文件
 	testFile := filepath.Join(repoPath, "test.txt")
@@ -210,11 +212,11 @@ func TestGitTool_Branch(t *testing.T) {
 
 	addInput := GitInput{Operation: OpAdd, Path: repoPath}
 	addJSON, _ := json.Marshal(addInput)
-	tool.Call(context.Background(), string(addJSON))
+	tool.InvokableRun(context.Background(), string(addJSON))
 
 	commitInput := GitInput{Operation: OpCommit, Path: repoPath, Message: "Initial commit"}
 	commitJSON, _ := json.Marshal(commitInput)
-	tool.Call(context.Background(), string(commitJSON))
+	tool.InvokableRun(context.Background(), string(commitJSON))
 
 	// 创建新分支
 	branchInput := GitInput{
@@ -224,7 +226,7 @@ func TestGitTool_Branch(t *testing.T) {
 		CreateBranch: true,
 	}
 	branchJSON, _ := json.Marshal(branchInput)
-	result, err := tool.Call(context.Background(), string(branchJSON))
+	result, err := tool.InvokableRun(context.Background(), string(branchJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -249,7 +251,7 @@ func TestGitTool_InvalidOperation(t *testing.T) {
 	}
 
 	inputJSON, _ := json.Marshal(input)
-	result, err := tool.Call(context.Background(), string(inputJSON))
+	result, err := tool.InvokableRun(context.Background(), string(inputJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -269,7 +271,7 @@ func TestGitTool_InvalidOperation(t *testing.T) {
 func TestGitTool_InvalidJSON(t *testing.T) {
 	tool := &GitTool{}
 
-	result, err := tool.Call(context.Background(), "invalid json")
+	result, err := tool.InvokableRun(context.Background(), "invalid json")
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -321,7 +323,7 @@ func TestGitTool_EmptyPath(t *testing.T) {
 	}
 
 	inputJSON, _ := json.Marshal(input)
-	result, err := tool.Call(context.Background(), string(inputJSON))
+	result, err := tool.InvokableRun(context.Background(), string(inputJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -347,7 +349,7 @@ func TestGitTool_EmptyMessage(t *testing.T) {
 	// 初始化仓库
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 尝试提交空信息
 	commitInput := GitInput{
@@ -356,7 +358,7 @@ func TestGitTool_EmptyMessage(t *testing.T) {
 		Message:   "",
 	}
 	commitJSON, _ := json.Marshal(commitInput)
-	result, err := tool.Call(context.Background(), string(commitJSON))
+	result, err := tool.InvokableRun(context.Background(), string(commitJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -382,7 +384,7 @@ func TestGitTool_Remote(t *testing.T) {
 	// 初始化仓库
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 添加远程仓库
 	remoteInput := GitInput{
@@ -392,7 +394,7 @@ func TestGitTool_Remote(t *testing.T) {
 		RemoteURL:  "https://github.com/test/test.git",
 	}
 	remoteJSON, _ := json.Marshal(remoteInput)
-	result, err := tool.Call(context.Background(), string(remoteJSON))
+	result, err := tool.InvokableRun(context.Background(), string(remoteJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)
@@ -418,7 +420,7 @@ func TestGitTool_Checkout(t *testing.T) {
 	// 初始化仓库并创建初始提交
 	initInput := GitInput{Operation: OpInit, Path: repoPath}
 	initJSON, _ := json.Marshal(initInput)
-	tool.Call(context.Background(), string(initJSON))
+	tool.InvokableRun(context.Background(), string(initJSON))
 
 	// 创建并提交文件
 	testFile := filepath.Join(repoPath, "test.txt")
@@ -426,11 +428,11 @@ func TestGitTool_Checkout(t *testing.T) {
 
 	addInput := GitInput{Operation: OpAdd, Path: repoPath}
 	addJSON, _ := json.Marshal(addInput)
-	tool.Call(context.Background(), string(addJSON))
+	tool.InvokableRun(context.Background(), string(addJSON))
 
 	commitInput := GitInput{Operation: OpCommit, Path: repoPath, Message: "Initial commit"}
 	commitJSON, _ := json.Marshal(commitInput)
-	tool.Call(context.Background(), string(commitJSON))
+	tool.InvokableRun(context.Background(), string(commitJSON))
 
 	// 创建新分支
 	branchInput := GitInput{
@@ -440,7 +442,7 @@ func TestGitTool_Checkout(t *testing.T) {
 		CreateBranch: true,
 	}
 	branchJSON, _ := json.Marshal(branchInput)
-	tool.Call(context.Background(), string(branchJSON))
+	tool.InvokableRun(context.Background(), string(branchJSON))
 
 	// 切换分支
 	checkoutInput := GitInput{
@@ -449,7 +451,7 @@ func TestGitTool_Checkout(t *testing.T) {
 		BranchName: "test-branch",
 	}
 	checkoutJSON, _ := json.Marshal(checkoutInput)
-	result, err := tool.Call(context.Background(), string(checkoutJSON))
+	result, err := tool.InvokableRun(context.Background(), string(checkoutJSON))
 
 	if err != nil {
 		t.Fatalf("Call失败: %v", err)

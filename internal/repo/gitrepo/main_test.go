@@ -1,7 +1,7 @@
 package gitrepo
 
 import (
-	"bloger/pkg/logger"
+	"mifer/pkg/logger"
 	"os"
 	"testing"
 

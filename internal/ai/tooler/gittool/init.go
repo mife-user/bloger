@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/cloudwego/eino/components/tool"
+	"github.com/cloudwego/eino/schema"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
@@ -63,14 +65,10 @@ func NewGitTool(username, email string) *GitTool {
 	}
 }
 
-// Name 工具名称
-func (g *GitTool) Name() string {
-	return "git"
-}
-
-// Description 工具描述
-func (g *GitTool) Description() string {
-	return `Git版本控制工具，支持以下操作：
+func (g *GitTool) Info(ctx context.Context) (*schema.ToolInfo, error) {
+	return &schema.ToolInfo{
+		Name: "git",
+		Desc: `Git版本控制工具，支持以下操作：
 - init: 初始化Git仓库
 - add: 添加文件到暂存区
 - commit: 提交更改
@@ -95,14 +93,14 @@ func (g *GitTool) Description() string {
   "email": "邮箱",
   "files": ["文件列表"],
   "create_branch": true/false
-}`
+}`,
+	}, nil
 }
 
-// Call 调用工具
-func (g *GitTool) Call(ctx context.Context, input string) (string, error) {
+func (g *GitTool) InvokableRun(ctx context.Context, argumentsInJSON string, opts ...tool.Option) (string, error) {
 	// 解析输入参数
 	var gitInput GitInput
-	if err := json.Unmarshal([]byte(input), &gitInput); err != nil {
+	if err := json.Unmarshal([]byte(argumentsInJSON), &gitInput); err != nil {
 		return g.errorOutput(fmt.Sprintf("解析输入参数失败: %v", err)), nil
 	}
 

@@ -1,10 +1,10 @@
 package gitservice
 
 import (
-	"bloger/internal/repo/gitrepo"
-	"bloger/pkg/conf"
-	"bloger/pkg/db"
-	"bloger/pkg/utils"
+	"mifer/internal/repo/gitrepo"
+	"mifer/pkg/conf"
+	"mifer/pkg/db"
+	"mifer/pkg/utils"
 	"context"
 	"os"
 	"path/filepath"

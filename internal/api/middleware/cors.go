@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"bloger/pkg/conf"
+	"mifer/pkg/conf"
 
 	"github.com/gin-gonic/gin"
 )

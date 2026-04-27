@@ -1,7 +1,7 @@
 package githandler
 
 import (
-	"bloger/internal/domain"
+	"mifer/internal/domain"
 )
 
 // Handler 处理器

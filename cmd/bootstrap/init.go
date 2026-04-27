@@ -1,9 +1,9 @@
 package bootstrap
 
 import (
-	"bloger/internal/api/route"
-	"bloger/pkg/conf"
-	"bloger/pkg/logger"
+	"mifer/internal/api/route"
+	"mifer/pkg/conf"
+	"mifer/pkg/logger"
 	"context"
 
 	"github.com/gin-gonic/gin"

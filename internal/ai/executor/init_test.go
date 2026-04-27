@@ -1,7 +1,8 @@
 package executor
 
 import (
-	"bloger/pkg/conf"
+	"context"
+	"mifer/pkg/conf"
 	"testing"
 )
 
@@ -16,7 +17,7 @@ func TestInitExecutor(t *testing.T) {
 		},
 	}
 
-	executor, err := InitExecutor(config)
+	executor, err := InitExecutor(context.Background(), config)
 
 	if err != nil {
 		t.Fatalf("初始化执行器失败: %v", err)
@@ -38,7 +39,7 @@ func TestInitExecutor_EmptyAPIKey(t *testing.T) {
 		},
 	}
 
-	executor, err := InitExecutor(config)
+	executor, err := InitExecutor(context.Background(), config)
 
 	// 应该返回错误
 	if err == nil {
@@ -62,7 +63,7 @@ func TestInitExecutor_EmptyBaseURL(t *testing.T) {
 		},
 	}
 
-	executor, err := InitExecutor(config)
+	executor, err := InitExecutor(context.Background(), config)
 
 	// 应该返回错误
 	if err == nil {
@@ -84,26 +85,11 @@ func TestInitExecutor_NilConfig(t *testing.T) {
 		}
 	}()
 
-	executor, err := InitExecutor(nil)
+	executor, err := InitExecutor(context.Background(), nil)
 
 	// 如果没有panic，应该返回错误或nil执行器
 	if err == nil && executor != nil {
 		t.Fatal("nil配置应该导致错误或nil执行器")
-	}
-}
-
-// TestNewExecutor 测试创建执行器
-func TestNewExecutor(t *testing.T) {
-	// 注意：这里需要实际的agents.Executor
-	// 由于创建需要完整的初始化流程，我们只测试NewExecutor函数
-	// 实际的Executor创建在InitExecutor中测试
-
-	// 这里我们测试NewExecutor是否能正确包装
-	executor := NewExecutor(nil)
-
-	// NewExecutor应该能处理nil
-	if executor == nil {
-		t.Fatal("NewExecutor不应该返回nil")
 	}
 }
 
@@ -118,7 +104,7 @@ func TestInitExecutor_CompleteConfig(t *testing.T) {
 		},
 	}
 
-	executor, err := InitExecutor(config)
+	executor, err := InitExecutor(context.Background(), config)
 
 	if err != nil {
 		t.Fatalf("初始化执行器失败: %v", err)
@@ -129,7 +115,7 @@ func TestInitExecutor_CompleteConfig(t *testing.T) {
 	}
 
 	// 验证executor的内部结构
-	if executor.executor == nil {
+	if executor.agent == nil {
 		t.Fatal("内部executor不应该为nil")
 	}
 }
@@ -153,7 +139,7 @@ func TestInitExecutor_DifferentModels(t *testing.T) {
 			},
 		}
 
-		executor, err := InitExecutor(config)
+		executor, err := InitExecutor(context.Background(), config)
 
 		if err != nil {
 			t.Errorf("模型 %s 初始化失败: %v", model, err)

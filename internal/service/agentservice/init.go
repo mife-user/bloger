@@ -1,6 +1,6 @@
 package agentservice
 
-import "bloger/internal/domain"
+import "mifer/internal/domain"
 
 type AgentService struct {
 	agent domain.Agent

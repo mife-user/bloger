@@ -1,7 +1,7 @@
 package gitservice
 
 import (
-	"bloger/internal/repo/gitrepo"
+	"mifer/internal/repo/gitrepo"
 )
 
 type GitService struct {

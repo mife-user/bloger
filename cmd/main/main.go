@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bloger/cmd/bootstrap"
+	"mifer/cmd/bootstrap"
 	"context"
 	"log"
 	"os"

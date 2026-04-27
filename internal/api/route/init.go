@@ -1,14 +1,16 @@
 package route
 
 import (
-	"bloger/internal/ai/executor"
-	"bloger/internal/api/handler/agenthandler"
-	"bloger/internal/api/handler/githandler"
-	"bloger/internal/api/middleware"
-	"bloger/internal/repo/gitrepo"
-	"bloger/internal/service/agentservice"
-	"bloger/internal/service/gitservice"
-	"bloger/pkg/conf"
+	"context"
+
+	"mifer/internal/ai/executor"
+	"mifer/internal/api/handler/agenthandler"
+	"mifer/internal/api/handler/githandler"
+	"mifer/internal/api/middleware"
+	"mifer/internal/repo/gitrepo"
+	"mifer/internal/service/agentservice"
+	"mifer/internal/service/gitservice"
+	"mifer/pkg/conf"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +30,7 @@ func (r *Route) NewRoute(config *conf.Config) error {
 	githandler := githandler.NewGitHandler(gitservice)
 	r.githandler = githandler
 
-	executor, err := executor.InitExecutor(config)
+	executor, err := executor.InitExecutor(context.Background(), config)
 	if err != nil {
 		return err
 	}

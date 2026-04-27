@@ -1,8 +1,8 @@
 package gitrepo
 
 import (
-	"bloger/pkg/conf"
-	"bloger/pkg/db"
+	"mifer/pkg/conf"
+	"mifer/pkg/db"
 )
 
 type GitRepo struct {

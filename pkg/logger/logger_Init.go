@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"bloger/pkg/conf"
+	"mifer/pkg/conf"
 	"os"
 	"path/filepath"
 

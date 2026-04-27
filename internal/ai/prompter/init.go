@@ -1,11 +1,16 @@
 package prompter
 
 import (
-	"github.com/tmc/langchaingo/llms"
-	"github.com/tmc/langchaingo/prompts"
+	"context"
+
+	"github.com/cloudwego/eino/flow/agent/react"
+	"github.com/cloudwego/eino/schema"
 )
 
-// InitPrompter 初始化提示词模板
-func InitPrompter(llm llms.Model, prompt string) prompts.PromptTemplate {
-	return prompts.NewPromptTemplate(prompt, []string{"input", "chat_history"})
+type ModifierBuilder struct{}
+
+func (ModifierBuilder) Build(systemPrompt string) react.MessageModifier {
+	return func(ctx context.Context, input []*schema.Message) []*schema.Message {
+		return append([]*schema.Message{schema.SystemMessage(systemPrompt)}, input...)
+	}
 }

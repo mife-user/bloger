@@ -1,7 +1,7 @@
 package db
 
 import (
-	"bloger/pkg/logger"
+	"mifer/pkg/logger"
 	"encoding/json"
 	"os"
 	"path/filepath"

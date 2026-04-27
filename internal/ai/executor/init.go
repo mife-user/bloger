@@ -1,41 +1,50 @@
 package executor
 
 import (
-	"bloger/internal/ai/agenter"
-	"bloger/internal/ai/llmer"
-	"bloger/internal/ai/memoryer"
-	"bloger/internal/ai/prompter"
-	"bloger/internal/ai/tooler"
-	"bloger/pkg/conf"
+	"context"
 
-	"github.com/tmc/langchaingo/agents"
+	"mifer/internal/ai/agenter"
+	"mifer/internal/ai/llmer"
+	"mifer/internal/ai/memoryer"
+	"mifer/internal/ai/prompter"
+	"mifer/internal/ai/tooler"
+	"mifer/internal/domain"
+	"mifer/pkg/conf"
+	"mifer/pkg/logger"
+
+	"github.com/cloudwego/eino/flow/agent/react"
+	"github.com/cloudwego/eino/schema"
 )
 
 type Executor struct {
-	executor *agents.Executor
+	agent       *react.Agent
+	chatHistory *memoryer.ChatHistory
 }
 
-func NewExecutor(executor *agents.Executor) *Executor {
-	return &Executor{executor: executor}
-}
-
-// InitExecutor 初始化执行器
-func InitExecutor(config *conf.Config) (*Executor, error) {
-	// 初始化LLM
-	llm, err := llmer.InitLLM(config)
+func InitExecutor(ctx context.Context, config *conf.Config) (*Executor, error) {
+	llm, err := llmer.InitLLM(ctx, config)
 	if err != nil {
 		return nil, err
 	}
-	// 初始化工具
-	agentTools := tooler.InitTools()
-	// 初始化内存
-	memory := memoryer.InitMemoryer(llm)
-	// 初始化提示词
-	prompter := prompter.InitPrompter(llm, config.Ai.SystemPrompt)
-	// 初始化Agent
-	agent := agenter.InitAgent(llm, &prompter, agentTools)
+	tools := tooler.InitTools()
+	modifier := prompter.ModifierBuilder{}.Build(config.Ai.SystemPrompt)
+	agent, err := agenter.InitAgent(ctx, llm, tools, modifier)
+	if err != nil {
+		return nil, err
+	}
+	return &Executor{
+		agent:       agent,
+		chatHistory: memoryer.New(2048),
+	}, nil
+}
 
-	// 创建Executor并设置内存
-	executor := agents.NewExecutor(agent, agents.WithMemory(memory))
-	return NewExecutor(executor), nil
+func (e *Executor) Chat(ctx context.Context, input domain.ChatRequest) (domain.ChatResponse, error) {
+	e.chatHistory.Append(schema.UserMessage(input.Content))
+	msg, err := e.agent.Generate(ctx, e.chatHistory.Messages())
+	if err != nil {
+		logger.Error("agent.Generate failed", logger.C(err))
+		return domain.ChatResponse{}, err
+	}
+	e.chatHistory.Append(msg)
+	return domain.ChatResponse{Content: msg.Content}, nil
 }

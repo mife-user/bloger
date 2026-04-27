@@ -1,7 +1,8 @@
 package llmer
 
 import (
-	"bloger/pkg/conf"
+	"context"
+	"mifer/pkg/conf"
 	"testing"
 )
 
@@ -16,7 +17,7 @@ func TestInitLLM_Success(t *testing.T) {
 		},
 	}
 
-	llm, err := InitLLM(config)
+	llm, err := InitLLM(context.Background(), config)
 	if err != nil {
 		t.Fatalf("初始化LLM失败: %v", err)
 	}
@@ -37,7 +38,7 @@ func TestInitLLM_EmptyAPIKey(t *testing.T) {
 		},
 	}
 
-	llm, err := InitLLM(config)
+	llm, err := InitLLM(context.Background(), config)
 
 	// 应该返回错误
 	if err == nil {
@@ -61,7 +62,7 @@ func TestInitLLM_EmptyBaseURL(t *testing.T) {
 		},
 	}
 
-	llm, err := InitLLM(config)
+	llm, err := InitLLM(context.Background(), config)
 
 	// 应该返回错误
 	if err == nil {
@@ -93,7 +94,7 @@ func TestInitLLM_DifferentModels(t *testing.T) {
 			},
 		}
 
-		llm, err := InitLLM(config)
+		llm, err := InitLLM(context.Background(), config)
 		if err != nil {
 			t.Errorf("模型 %s 初始化失败: %v", model, err)
 			continue
@@ -124,7 +125,7 @@ func TestInitLLM_DifferentBaseURLs(t *testing.T) {
 			},
 		}
 
-		llm, err := InitLLM(config)
+		llm, err := InitLLM(context.Background(), config)
 		if err != nil {
 			t.Errorf("BaseURL %s 初始化失败: %v", baseURL, err)
 			continue
@@ -145,7 +146,7 @@ func TestInitLLM_NilConfig(t *testing.T) {
 		}
 	}()
 
-	llm, err := InitLLM(nil)
+	llm, err := InitLLM(context.Background(), nil)
 
 	// 如果没有panic，应该返回错误或nil LLM
 	if err == nil && llm != nil {

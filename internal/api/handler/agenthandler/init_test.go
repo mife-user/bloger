@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"bloger/internal/domain"
+	"mifer/internal/domain"
 )
 
 // TestNewAgentHandler 测试创建AgentHandler
@@ -53,5 +53,5 @@ func TestAgentHandler_ServiceInjection(t *testing.T) {
 type mockAgentService struct{}
 
 func (m *mockAgentService) Chat(ctx context.Context, input domain.ChatRequest) (domain.ChatResponse, error) {
-	return domain.ChatResponse{Message: map[string]any{"output": "test response"}}, nil
+	return domain.ChatResponse{Content: "test response"}, nil
 }

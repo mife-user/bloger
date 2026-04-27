@@ -1,7 +1,7 @@
 package exc
 
 import (
-	"bloger/pkg/logger"
+	"mifer/pkg/logger"
 	"encoding/json"
 )
 

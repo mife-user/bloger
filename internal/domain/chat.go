@@ -1,9 +1,9 @@
 package domain
 
 type ChatRequest struct {
-	Message map[string]any
+	Content string `json:"content"`
 }
 
 type ChatResponse struct {
-	Message map[string]any
+	Content string `json:"content"`
 }

@@ -1,8 +1,8 @@
 package agentservice
 
 import (
-	"bloger/internal/domain"
-	"bloger/pkg/task"
+	"mifer/internal/domain"
+	"mifer/pkg/task"
 	"context"
 )
 
